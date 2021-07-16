@@ -36,3 +36,21 @@
     transform: rotate(360deg);
   }
 }
+
+.buttonContainer {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.sideBar {
+  width: 15%;
+  margin-top: 6%;
+}
+
+.body {
+  display: flex;
+}
+
+.inputForm {
+  width: 100%;
+}

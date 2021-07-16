@@ -1,0 +1,10 @@
+.containerInput {
+    text-align: center;
+    margin-top: 2%;
+}
+
+.inputField {
+    width: 90%;
+    height: 300px;
+    font-size: 21px;
+}

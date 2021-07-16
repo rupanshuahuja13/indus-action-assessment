@@ -1,0 +1,14 @@
+.button {
+    background-color: #71EC4C;
+}
+
+.container {
+    justify-content: center;
+    display: flex;
+    margin-top: 2%;
+}
+
+.margins {
+    margin-left: 1%;
+    margin-right: 1%;
+}

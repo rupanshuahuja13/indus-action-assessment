@@ -1,0 +1,8 @@
+.navBar {
+    background: #4c69dd;;
+    color: white;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

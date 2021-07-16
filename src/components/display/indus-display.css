@@ -1,0 +1,9 @@
+.label {
+    margin-right: 1%;
+    font-weight: 600;
+    font-size: larger;
+}
+
+.valueContainer {
+    height: 100px;
+}
