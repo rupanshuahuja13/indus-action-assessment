@@ -65,14 +65,15 @@ class App extends React.Component {
   }
 
   handleReset() {
-    this.setState({ value: "" });
-    this.character = this.state.value;
+    //this.setState({ value: "" });
+    this.character = "";
     this.wordCount = this.character
       .split(" ")
       .filter((item) => item !== "").length;
     this.characterCount = this.character.length;
     localStorage.setItem("oldValues", JSON.stringify([]));
     localStorage.setItem("newValues", JSON.stringify([]));
+    this.setState({ value: "" });
   }
 
   async translateTextToEnglish(text) {
