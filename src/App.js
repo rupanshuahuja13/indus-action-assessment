@@ -6,6 +6,10 @@ import db from "./Firebase";
 import React, { Fragment } from "react";
 import IndusDisplay from "./components/display/indus-display";
 import axios from "axios";
+import { faUndo } from '@fortawesome/free-solid-svg-icons';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
+import { faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 
 class App extends React.Component {
   constructor(props) {
@@ -39,24 +43,28 @@ class App extends React.Component {
 
       localStorage.setItem("oldValues", JSON.stringify(oldValues));
     }
-  
+
+    //throttling
     clearTimeout(this.timeOutId);
-    this.timeOutId = setTimeout(async () => {
-      const translatedText = event.target.value;
-      // await this.translateTextToEnglish(
-      //   event.target.value
-      // );
-      this.character = translatedText;
-      this.wordCount = this.character
-        .split(" ")
-        .filter((item) => item !== "").length;
-      this.characterCount = this.character.length;
-    }, 100);
-    //
+    this.timeOutId = setTimeout(
+      async function () {
+        const translatedText = await this.translateTextToEnglish(
+          event.target.value
+        );
+        this.character = translatedText;
+        this.wordCount = this.character
+          .split(" ")
+          .filter((item) => item !== "").length;
+        this.characterCount = this.character.length;
+        this.setState({ value: event.target.value });
+      }.bind(this),
+      50
+    );
+
     this.setState({ value: event.target.value });
   }
 
-  handleReset(event) {
+  handleReset() {
     this.setState({ value: "" });
     this.character = this.state.value;
     this.wordCount = this.character
@@ -82,7 +90,7 @@ class App extends React.Component {
     return response.data.data.translations[0].translatedText;
   }
 
-  handleUndo(event) {
+  handleUndo() {
     if (
       localStorage.getItem("oldValues") &&
       JSON.parse(localStorage.getItem("oldValues")).length > 0
@@ -98,21 +106,19 @@ class App extends React.Component {
         )
       );
       const newValue = JSON.parse(localStorage.getItem("newValues"));
-      newValue.push(lastValue)
-      localStorage.setItem(
-        "newValues",
-        JSON.stringify(newValue)
-      );
-      this.setState({ value: lastValue });
-      this.character = this.state.value;
+      newValue.push(this.state.value);
+      localStorage.setItem("newValues", JSON.stringify(newValue));
+
+      this.character = lastValue;
       this.wordCount = this.character
         .split(" ")
         .filter((item) => item !== "").length;
       this.characterCount = this.character.length;
+      this.setState({ value: lastValue });
     }
   }
 
-  handleRedo(event) {
+  handleRedo() {
     if (
       localStorage.getItem("newValues") &&
       JSON.parse(localStorage.getItem("newValues")).length > 0
@@ -128,17 +134,15 @@ class App extends React.Component {
         )
       );
       const newValue = JSON.parse(localStorage.getItem("oldValues"));
-      newValue.push(lastValue)
-      localStorage.setItem(
-        "oldValues",
-        JSON.stringify(newValue)
-      );
-      this.setState({ value: lastValue });
-      this.character = this.state.value;
+      newValue.push(this.state.value);
+      localStorage.setItem("oldValues", JSON.stringify(newValue));
+
+      this.character = lastValue;
       this.wordCount = this.character
         .split(" ")
         .filter((item) => item !== "").length;
       this.characterCount = this.character.length;
+      this.setState({ value: lastValue });
     }
   }
 
@@ -157,20 +161,19 @@ class App extends React.Component {
     this.fetchData().then(async () => {
       localStorage.setItem("oldValues", JSON.stringify([]));
       localStorage.setItem("newValues", JSON.stringify([]));
-    //  this.translateTextToEnglish(
-    //     this.state.value
-    //   ).then((translatedText) => {
-      const translatedText = this.state.value;
+      this.translateTextToEnglish(
+        this.state.value
+      ).then((translatedText) => {
         this.character = translatedText;
         this.wordCount = translatedText
           .split(" ")
           .filter((item) => item !== "").length;
         this.characterCount = translatedText.length;
         this.isLoading = false;
-        //this.characterCount = this.state.value.length;
+        this.characterCount = this.state.value.length;
+        this.setState({ value: this.state.value });
       });
-    // });
-
+    });
   }
 
   async fetchData() {
@@ -182,55 +185,63 @@ class App extends React.Component {
   }
 
   render() {
-      return (
-        <Fragment>
-          <IndusNavbar text="Demo Project"></IndusNavbar>
-          <form onSubmit={this.handleSubmit}>
-            <div className="body">
-              <div className="sideBar">
-                <IndusDisplay
-                  displayName="Character Count"
-                  text={this.characterCount}
-                ></IndusDisplay>
-                <IndusDisplay
-                  displayName="Word Count"
-                  text={this.wordCount}
-                ></IndusDisplay>
-              </div>
-              <div className="inputForm">
-                <IndusInput
-                  value={this.state.value}
-                  onChange={this.handleChange}
-                ></IndusInput>
-                <div className="buttonContainer">
-                  <IndusButton
-                    buttonText="Undo"
-                    click={this.handleUndo}
-                    buttonColor="yellow"
-                    disabled={JSON.parse(localStorage.getItem("oldValues")).length === 0}
-                  ></IndusButton>
-                  <IndusButton
-                    buttonText="Redo"
-                    click={this.handleRedo}
-                    buttonColor="yellow"
-                    disabled={JSON.parse(localStorage.getItem("newValues")).length === 0}
-                  ></IndusButton>
-                  <IndusButton
-                    buttonText="Reset"
-                    click={this.handleReset}
-                    buttonColor="#ccc4c4"
-                  ></IndusButton>
-                  <IndusButton
-                    buttonText="Submit"
-                    click={this.handleSubmit}
-                    buttonColor="#6eed6e"
-                  ></IndusButton>
-                </div>
+    return (
+      <Fragment>
+        <IndusNavbar text="Demo Project"></IndusNavbar>
+        <form onSubmit={this.handleSubmit}>
+          <div className="body">
+            <div className="sideBar">
+              <IndusDisplay
+                displayName="Character Count"
+                text={this.characterCount}
+              ></IndusDisplay>
+              <IndusDisplay
+                displayName="Word Count"
+                text={this.wordCount}
+              ></IndusDisplay>
+            </div>
+            <div className="inputForm">
+              <IndusInput
+                value={this.state.value}
+                onChange={this.handleChange}
+              ></IndusInput>
+              <div className="buttonContainer">
+                <IndusButton
+                  buttonText="Undo"
+                  click={this.handleUndo}
+                  buttonColor="yellow"
+                  iconName={faUndo}
+                  disabled={
+                    JSON.parse(localStorage.getItem("oldValues")).length === 0
+                  }
+                ></IndusButton>
+                <IndusButton
+                  buttonText="Redo"
+                  click={this.handleRedo}
+                  buttonColor="yellow"
+                  iconName={faRedo}
+                  disabled={
+                    JSON.parse(localStorage.getItem("newValues")).length === 0
+                  }
+                ></IndusButton>
+                <IndusButton
+                  buttonText="Reset"
+                  click={this.handleReset}
+                  buttonColor="#ccc4c4"
+                  iconName={faEraser}
+                ></IndusButton>
+                <IndusButton
+                  buttonText="Submit"
+                  click={this.handleSubmit}
+                  buttonColor="#6eed6e"
+                  iconName={faSave}
+                ></IndusButton>
               </div>
             </div>
-          </form>
-        </Fragment>
-      );
+          </div>
+        </form>
+      </Fragment>
+    );
   }
 }
 
