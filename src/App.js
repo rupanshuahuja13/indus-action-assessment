@@ -213,7 +213,7 @@ class App extends React.Component {
                   buttonColor="yellow"
                   iconName={faUndo}
                   disabled={
-                    JSON.parse(localStorage.getItem("oldValues")).length === 0
+                    localStorage.getItem("oldValues") && JSON.parse(localStorage.getItem("oldValues")).length === 0
                   }
                 ></IndusButton>
                 <IndusButton
@@ -222,7 +222,7 @@ class App extends React.Component {
                   buttonColor="yellow"
                   iconName={faRedo}
                   disabled={
-                    JSON.parse(localStorage.getItem("newValues")).length === 0
+                    localStorage.getItem("newValues") && JSON.parse(localStorage.getItem("newValues")).length === 0
                   }
                 ></IndusButton>
                 <IndusButton
