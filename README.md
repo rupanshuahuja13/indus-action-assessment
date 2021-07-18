@@ -1,3 +1,11 @@
+Clone the repository in your local computer to run the local host. You can run below command:
+
+## `git clone https://github.com/rupanshuahuja13/indus-action-assessment`
+
+Then to download all the used packages just open the project in Visual Studio IDE (or some other preferred IDE) and run below command:
+
+## `npm install`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
